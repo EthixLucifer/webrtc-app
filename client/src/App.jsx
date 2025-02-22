@@ -1,9 +1,7 @@
-// src/App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { User1 } from './pages/User1';
 import { User2 } from './pages/User2';
 
-// Add default export
 export default function App() {
   return (
     <BrowserRouter>
