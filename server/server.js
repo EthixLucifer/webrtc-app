@@ -7,11 +7,14 @@ const app = express();
 app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
-});
+    cors: {
+      origin: [
+        "https://your-vercel-app.vercel.app", // Your Vercel frontend URL
+        "http://localhost:5173"              // Local development
+      ],
+      methods: ["GET", "POST"]
+    }
+  });
 
 io.on('connection', (socket) => {
   socket.on('join', (roomId) => {

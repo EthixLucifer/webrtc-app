@@ -10,12 +10,27 @@ export const useWebRTC = (roomId) => {
   const [remoteStream, setRemoteStream] = useState(null);
   const peerConnection = useRef(null);
 
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to signaling server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from signaling server');
+    });
+  }, []);
   const servers = {
     iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' }
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      {
+        urls: 'turn:your-turn-server.com', // Add a TURN server here
+        username: 'username',
+        credential: 'password'
+      }
     ]
   };
-
   const setupPeerConnection = () => {
     peerConnection.current = new RTCPeerConnection(servers);
 
@@ -23,6 +38,10 @@ export const useWebRTC = (roomId) => {
     localStream?.getTracks().forEach(track => {
       peerConnection.current.addTrack(track, localStream);
     });
+
+    peerConnection.current.oniceconnectionstatechange = () => {
+      console.log('ICE Connection State:', peerConnection.current.iceConnectionState);
+    };
 
     // In useWebRTC hook
     peerConnection.current.onconnectionstatechange = () => {
